@@ -1,0 +1,20 @@
+yarn-error.log
+.vscode
+# Typescript iterative builds
+build-info
+# Output code
+dist/
+# In case someone compiles in-place rather than to dist
+src/**/*.js
+src/**/*.d.ts
+
+# Old dependencies
+node_modules/
+
+# Yarn v2
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions

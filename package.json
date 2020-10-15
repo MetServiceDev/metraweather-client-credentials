@@ -1,0 +1,77 @@
+{
+  "name": "@metservice/metraweather-client-credentials",
+  "version": "0.0.1",
+  "description": "A library to faciliate exchanging client credentials for a JWT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist/**/!(*.test).*"
+  ],
+  "author": "James Boud <James.Boud@metservice.com>",
+  "module": "dist/index.js",
+  "homepage": "https://github.com/MetServiceDev/metraweather-client-credentials/blob/master/README.md",
+  "bugs": {
+    "url": "https://github.com/MetServiceDev/metraweather-client-credentials/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetServiceDev/metraweather-client-credentials.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "prepack": "yarn build",
+    "prepublish": "yarn test",
+    "test": "jest",
+    "test:watch": "yarn test --watch",
+    "build": "tsc",
+    "build:watch": "yarn build -w"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": "prettier --write"
+  },
+  "devDependencies": {
+    "@metservice/prettier": "1.1.0",
+    "@types/isomorphic-fetch": "0.0.35",
+    "@types/jest": "25.2.3",
+    "@types/luxon": "1.24.1",
+    "@types/node": "^14.11.8",
+    "@types/parse-link-header": "1.0.0",
+    "@types/xml2js": "0.4.5",
+    "@types/yargs": "15.0.7",
+    "husky": ">=4",
+    "jest": "25.5.4",
+    "lint-staged": ">=10",
+    "prettier": "2.0.4",
+    "source-map-support": "0.5.16",
+    "ts-jest": "25.5.1",
+    "ts-node": "8.1.0",
+    "typescript": "3.9.3"
+  },
+  "dependencies": {
+    "chalk": "4.1.0",
+    "enquirer": "2.3.6",
+    "isomorphic-fetch": "2.2.1",
+    "jsondiffpatch": "0.4.1",
+    "luxon": "1.24.1",
+    "ora": "5.1.0",
+    "parse-link-header": "1.0.1",
+    "xml2js": "0.4.23",
+    "yargs": "16.0.3"
+  },
+  "dependenciesMeta": {
+    "@types/yargs": {
+      "unplugged": true
+    },
+    "enquirer": {
+      "unplugged": true
+    },
+    "yargs": {
+      "unplugged": true
+    }
+  }
+}
