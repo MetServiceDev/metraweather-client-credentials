@@ -588,7 +588,7 @@ __metadata:
     "@types/isomorphic-fetch": 0.0.35
     "@types/jest": 25.2.3
     "@types/luxon": 1.24.1
-    "@types/node": ^14.11.8
+    "@types/node": 14.11.8
     "@types/parse-link-header": 1.0.0
     "@types/xml2js": 0.4.5
     "@types/yargs": 15.0.7
@@ -735,7 +735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^14.11.8":
+"@types/node@npm:*, @types/node@npm:14.11.8":
   version: 14.11.8
   resolution: "@types/node@npm:14.11.8"
   checksum: 5139c07ba76d791b4930fa02ec746656dacf78b43c431d56a7514a8285962d0511bf356bee870968a541033c14967b58f7b2a58c48ac81646ce4eb28d2ff433d
