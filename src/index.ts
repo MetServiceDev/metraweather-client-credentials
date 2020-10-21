@@ -1,0 +1,1 @@
+export { getJwtFromClientCredentials } from './client';
