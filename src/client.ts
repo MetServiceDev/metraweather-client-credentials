@@ -37,13 +37,22 @@ const TEN_MINUTES = 10 * 60 * 1000;
 const setCachedJwt = (jwt: string | undefined) => {
 	cachedJwt = jwt;
 }
-const getJwtFromClientCredentials = async (clientCredentials: ClientCredentials, maxAttempts: number = 3): Promise<string> => {
-	if (!cachedJwt || Date.now() > refetchAt) {
+/**
+ * Exchanges the client credentials for a JWT, and caches it until ten minutes before expiry.
+ * Retries multiple times with an increasing back-off if the API returns an error (1 second per failed attempt).
+ * 
+ * @param clientCredentials - Your clientId/clientSecret
+ * @param force - Forcibly refresh the token even if it is still valid, defaults to false
+ * @param maxAttempts - The maximum amount of times to attempt fetching the token before throwing an error, defaults to 3.
+ */
+const getJwtFromClientCredentials = async (clientCredentials: ClientCredentials, force: boolean = false, maxAttempts: number = 3): Promise<string> => {
+	if (!cachedJwt || Date.now() > refetchAt || force) {
 		let succesfulResponse = false;
 		let attempts = 1;
 		let response = await fetchCredentials(clientCredentials);
 		while (!response.ok && attempts < maxAttempts) {
 			response = await fetchCredentials(clientCredentials);
+			await new Promise((resolve) => setTimeout(resolve, attempts * 1000))
 			attempts++;
 		}
 		if (!response.ok) {
