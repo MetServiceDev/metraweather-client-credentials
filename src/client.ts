@@ -56,6 +56,8 @@ const setCachedJwt = (jwt: string | undefined) => {
  * Exchanges the client credentials for a JWT, and caches it until ten minutes before expiry.
  * Retries multiple times with an increasing back-off if the API returns an error (1 second per failed attempt).
  * 
+ * WARNING: The cached jwt is returned no matter what the client credentials are. If you need to call it with different client credentials, this will not work.
+ *
  * @param clientCredentials - Your clientId/clientSecret
  * @param force - Forcibly refresh the token even if it is still valid, defaults to false
  * @param maxAttempts - The maximum amount of times to attempt fetching the token before throwing an error, defaults to 3.

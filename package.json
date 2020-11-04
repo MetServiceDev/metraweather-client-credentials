@@ -1,6 +1,6 @@
 {
   "name": "@metservice/metraweather-client-credentials",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A library to faciliate exchanging client credentials for a JWT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
