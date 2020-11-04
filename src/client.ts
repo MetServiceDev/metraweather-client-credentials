@@ -1,3 +1,4 @@
+import fetch from "isomorphic-fetch";
 
 interface ClientCredentials {
 	clientId: string;
@@ -14,23 +15,37 @@ interface OktaResponse {
 let cachedJwt: string | undefined;
 let refetchAt = -1;
 
-const PRODUCTION_OKTA_ISSUER = 'https://metraweather.okta.com/oauth2/aus806w3t6ASnEeMm2p7/v1/token';
+const PRODUCTION_OKTA_ISSUER = 'https://metraweather.okta.com/oauth2/aus806w3t6ASnEeMm2p7';
 const DEV_OKTA_ISSUER = 'https://dev-metraweather.oktapreview.com/oauth2/aust1sg19euC6lDvo0h7';
-const fetchCredentials = ({ clientId, clientSecret }: ClientCredentials) => {
+const fetchCredentials = async ({ clientId, clientSecret }: ClientCredentials): Promise<Response> => {
+	
 	const oktaUrl = process.env.DEV_ENVIRONMENT === 'true' ? DEV_OKTA_ISSUER : PRODUCTION_OKTA_ISSUER;
-	const requestForm = new FormData();
+	const requestForm = new URLSearchParams();
 	requestForm.append('grant_type', 'client_credentials');
 	requestForm.append('scope', 'tier');
+	const authorizationCredentials = Buffer.from(`${clientId}:${clientSecret}`, 'utf-8').toString('base64');
 	return fetch(`${oktaUrl}/v1/token`, {
 		method: 'POST',
 		headers: {
 			accept: 'application/json',
 			'cache-control': 'no-cache',
 			'content-type': 'application/x-www-form-urlencoded',
-			'Authorization': `Basic ${btoa(`${clientId}:${clientSecret})`)}`,
+			'Authorization': `Basic ${authorizationCredentials}`,
 		},
 		body: requestForm
 	});
+}
+
+let requestInProcess: Promise<Response> | undefined;
+const singletonFetchCredentials = async (clientCredentials: ClientCredentials): Promise<Response> => {
+	if(requestInProcess) {
+		return requestInProcess;
+	}
+	const request = fetchCredentials(clientCredentials);
+	requestInProcess = request;
+	await requestInProcess;
+	requestInProcess = undefined;
+	return request;
 }
 
 const TEN_MINUTES = 10 * 60 * 1000;
@@ -49,14 +64,15 @@ const getJwtFromClientCredentials = async (clientCredentials: ClientCredentials,
 	if (!cachedJwt || Date.now() > refetchAt || force) {
 		let succesfulResponse = false;
 		let attempts = 1;
-		let response = await fetchCredentials(clientCredentials);
+		let response = await singletonFetchCredentials(clientCredentials);
 		while (!response.ok && attempts < maxAttempts) {
-			response = await fetchCredentials(clientCredentials);
+			response = await singletonFetchCredentials(clientCredentials);
 			await new Promise((resolve) => setTimeout(resolve, attempts * 1000))
 			attempts++;
 		}
 		if (!response.ok) {
-			throw new Error(`Unable to exchange credentials for token: ${response.status} - "${response.statusText}"`)
+			const body = await response.text();
+			throw new Error(`Unable to exchange credentials for token: ${response.status} - "${response.statusText}" - "${body}"`)
 		}
 		succesfulResponse = true;
 		const oktaResponse = (await response.json()) as OktaResponse;
